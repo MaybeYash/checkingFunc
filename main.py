@@ -24,13 +24,13 @@ def get_creation_date(telegram_id: int) -> str:
     
     return "N/A"
 
-@app.route('/check', methods=['POST'])
+@app.route('/check', methods=['GET'])
 def check_join_date():
-    data = request.json
-    if not data or 'telegramId' not in data:
-        return jsonify({"error": "Invalid input. Please provide 'TelegramId'."}), 400
+    telegram_id = request.args.get('user', default=None, type=int)
     
-    telegram_id = data['telegramId']
+    if telegram_id is None:
+        return jsonify({"error": "Invalid input. Please provide a 'user' parameter with a valid Telegram ID."}), 400
+    
     join_date = get_creation_date(telegram_id)
     
     if join_date != "N/A":
@@ -54,10 +54,9 @@ def check_join_date():
     
     return jsonify({"message": message})
 
-
 @app.route('/')
 def home():
-    return "Telegram Join Checker..."
+    return "Welcome to the Telegram Join Date Checker!"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
