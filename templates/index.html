@@ -3,87 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Checker</title>
+    <title>Telegram Join Date Checker</title>
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
-            background-color: #0f0f0f;
-            color: #0aff0a;
+            background-color: #101010;
+            color: #39FF14;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
             text-align: center;
-            margin-top: 50px;
+            background: #222;
+            padding: 2em;
+            border-radius: 10px;
         }
-
-        h1 {
-            font-size: 3em;
+        .title {
+            font-size: 2em;
+            margin-bottom: 1em;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
         }
-
-        .robotic {
-            font-size: 1.5em;
-            font-weight: bold;
-            letter-spacing: 0.1em;
-            border: 2px solid #0aff0a;
-            padding: 10px;
-            width: 80%;
-            margin: auto;
-            animation: flicker 1.5s infinite;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
         input {
-            width: 60%;
-            padding: 10px;
-            border: 2px solid #0aff0a;
-            background-color: #0f0f0f;
-            color: #0aff0a;
-            font-size: 1.2em;
+            padding: 0.5em;
+            font-size: 1em;
+            border: none;
+            outline: none;
+            margin-bottom: 1em;
+            width: 100%;
         }
-
         button {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background-color: #0aff0a;
-            color: #0f0f0f;
+            padding: 0.5em 1em;
+            font-size: 1em;
+            background-color: #39FF14;
             border: none;
             cursor: pointer;
-            margin-top: 20px;
+            width: 100%;
         }
-
         button:hover {
-            background-color: #0bf50b;
+            background-color: #2f8a10;
         }
-
         .result {
-            margin-top: 20px;
+            margin-top: 1em;
             font-size: 1.2em;
         }
     </style>
 </head>
 <body>
-    <h1>Telegram Join Date Checker</h1>
-    <div class="robotic">Enter User ID Or Username :</div>
-    <input type="text" id="identifier" placeholder="Enter ID or Username">
-    <button onclick="checkUser()">Check</button>
-
-    <div id="result" class="result"></div>
+    <div class="container">
+        <div class="title">Telegram Join Date Checker</div>
+        <input type="text" id="user-input" placeholder="Enter Telegram ID or Username">
+        <button onclick="checkDetails()">Check Join Date</button>
+        <div class="result" id="result"></div>
+    </div>
 
     <script>
-        async function checkUser() {
-            const identifier = document.getElementById('identifier').value;
-            const response = await fetch(`/check?details=${identifier}`);
-            const data = await response.json();
-            
+        function checkDetails() {
+            const userInput = document.getElementById('user-input').value;
             const resultDiv = document.getElementById('result');
-            if (data.error) {
-                resultDiv.textContent = data.error;
+            
+            if (userInput) {
+                fetch(`/check?details=${encodeURIComponent(userInput)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            resultDiv.innerHTML = `<p>${data.error}</p>`;
+                        } else {
+                            resultDiv.innerHTML = `
+                                <p>Username: ${data.username}</p>
+                                <p>First Name: ${data.first_name}</p>
+                                <p>Telegram ID: ${data.id}</p>
+                                <p>Join Date: ${data.join_date}</p>
+                            `;
+                        }
+                    })
+                    .catch(err => {
+                        resultDiv.innerHTML = `<p>Error fetching details.</p>`;
+                        console.error(err);
+                    });
             } else {
-                resultDiv.textContent = `Username: ${data.username}, First Name: ${data.first_name}, Join Date: ${data.join_date}`;
+                resultDiv.innerHTML = `<p>Please enter a Telegram ID or Username.</p>`;
             }
         }
     </script>
