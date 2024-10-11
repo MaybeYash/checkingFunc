@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Checker</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0f0f0f;
+            color: #0aff0a;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .robotic {
+            font-size: 1.5em;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            border: 2px solid #0aff0a;
+            padding: 10px;
+            width: 80%;
+            margin: auto;
+            animation: flicker 1.5s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        input {
+            width: 60%;
+            padding: 10px;
+            border: 2px solid #0aff0a;
+            background-color: #0f0f0f;
+            color: #0aff0a;
+            font-size: 1.2em;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #0aff0a;
+            color: #0f0f0f;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0bf50b;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Join Date Checker</h1>
+    <div class="robotic">Enter User ID Or Username :</div>
+    <input type="text" id="identifier" placeholder="Enter ID or Username">
+    <button onclick="checkUser()">Check</button>
+
+    <div id="result" class="result"></div>
+
+    <script>
+        async function checkUser() {
+            const identifier = document.getElementById('identifier').value;
+            const response = await fetch(`/check?details=${identifier}`);
+            const data = await response.json();
+            
+            const resultDiv = document.getElementById('result');
+            if (data.error) {
+                resultDiv.textContent = data.error;
+            } else {
+                resultDiv.textContent = `Username: ${data.username}, First Name: ${data.first_name}, Join Date: ${data.join_date}`;
+            }
+        }
+    </script>
+</body>
+</html>
